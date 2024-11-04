@@ -1,16 +1,18 @@
 {
   "name": "@vreden/baileys",
-  "version": "6.7.7",
-  "description": "WhatsApp API",
+  "version": "6.7.8",
+  "description": "Premium Baileys With Newsletter And Buttons Supported By Bochell FF",
   "keywords": [
     "whatsapp",
     "js-whatsapp",
     "whatsapp-api",
     "whatsapp-web",
-    "whatsapp-chat",
-    "whatsapp-group",
-    "automation",
-    "multi-device"
+    "multi-device",
+    "newsletter",
+    "buttons",
+    "interaktive",
+    "whatsapp-bot",
+    "vreden"
   ],
   "homepage": "https://github.com/vreden/baileys",
   "repository": {
