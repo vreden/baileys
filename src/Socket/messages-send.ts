@@ -5,7 +5,7 @@ import { Readable } from 'stream'
 import { proto } from '../../WAProto'
 import { DEFAULT_CACHE_TTLS, WA_DEFAULT_EPHEMERAL } from '../Defaults'
 import { AnyMessageContent, MediaConnInfo, MessageReceiptType, MessageRelayOptions, MiscMessageGenerationOptions, SocketConfig, WAMediaUploadFunctionOpts, WAMessageKey } from '../Types'
-import { aggregateMessageKeysNotFromMe, assertMediaContent, bindWaitForEvent, decryptMediaRetryData, encodeNewsletterMessage, encodeSignedDeviceIdentity, encodeWAMessage, encryptMediaRetryRequest, extractDeviceJids, generateMessageID, generateMessageIDV2, generateWAMessage, getStatusCodeForMediaRetry, getUrlFromDirectPath, getWAUploadToServer, parseAndInjectE2ESessions, unixTimestampSeconds } from '../Utils'
+import { aggregateMessageKeysNotFromMe, assertMediaContent, bindWaitForEvent, decryptMediaRetryData, encodeNewsletterMessage, encodeSignedDeviceIdentity, encodeWAMessage, encryptMediaRetryRequest, extractDeviceJids, generateMessageID, generateMessageIDV2, generateWAMessageFromContent, generateWAMessage, getStatusCodeForMediaRetry, getUrlFromDirectPath, getWAUploadToServer, parseAndInjectE2ESessions, unixTimestampSeconds } from '../Utils'
 import { getUrlInfo } from '../Utils/link-preview'
 import { areJidsSameUser, BinaryNode, BinaryNodeAttributes, getBinaryNodeChild, getBinaryNodeChildren, isJidGroup, isJidNewsletter, isJidUser, jidDecode, jidEncode, jidNormalizedUser, JidWithDevice, S_WHATSAPP_NET } from '../WABinary'
 import { makeNewsletterSocket } from './newsletter'
@@ -307,7 +307,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 	const relayMessage = async(
 		jid: string,
-		message: string,
+		message: proto.IMessage,
 		{ messageId: msgId, participant, additionalAttributes, useUserDevicesCache, useCachedGroupMetadata, statusJidList }: MessageRelayOptions
 	) => {
 		const meId = authState.creds.me!.id
@@ -327,7 +327,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 		const participants: BinaryNode[] = []
 		const destinationJid = (!isStatus) ? jidEncode(user, isLid ? 'lid' : isGroup ? 'g.us' : isNewsletter ? 'newsletter' : 's.whatsapp.net') : statusJid
-		const bizJid = "d9e028d85emshea6b0e8b786d07dp162e0bjsn6880ba6706ca"
 		const binaryNodeContent: BinaryNode[] = []
 		const devices: JidWithDevice[] = []
 
@@ -544,7 +543,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					logger.debug({ jid }, 'adding device identity')
 				}
 
-				if(message?.interactiveMessage?.metaButtonsID == bizJid) {
+				if(message?.interactiveMessage?.nativeFlowMessage) {
 					if(!stanza.content || !Array.isArray(stanza.content)) {
 						stanza.content = []
 					}
@@ -575,7 +574,66 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		return msgId
 	}
 	
-	const getTypeMessage = (msg: string) => {
+const ments = (teks: string = ''): string[] => {
+    return teks.match('@') ? [...teks.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net') : [];
+}
+
+const sendButtonText = (
+    jid: string,
+    buttons: { name: string; buttonParamsJson: Record<string, any> }[] = [],
+    text: string,
+    footer: string,
+    quoted: string = '',
+    options: {
+        contextInfo: {
+            mentionedJid: string[];
+        };
+    } = {
+        contextInfo: {
+            mentionedJid: ments(text),
+        }
+    }
+): any => {
+    let button: { name: string; buttonParamsJson: string }[] = [];
+    
+    for (let i = 0; i < buttons.length; i++) {
+        button.push({
+            "name": buttons[i].name,
+            "buttonParamsJson": JSON.stringify(buttons[i].buttonParamsJson)
+        });
+    }
+
+    const msg = generateWAMessageFromContent(jid, {
+        interactiveMessage: proto.Message.InteractiveMessage.create({
+            ...options,
+            mentionedJid: ments(text),
+            body: proto.Message.InteractiveMessage.Body.create({
+                text: text
+            }),
+            footer: proto.Message.InteractiveMessage.Footer.create({
+                text: footer
+            }),
+            header: proto.Message.InteractiveMessage.Header.create({
+                title: "",
+                hasMediaAttachment: false
+            }),
+            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                buttons: button,
+            })
+        })
+    }, {
+        quoted: quoted
+    });
+
+    relayMessage(msg.key.remoteJid, msg.message, {
+        messageId: msg.key.id
+    });
+
+    return msg;
+}
+
+
+	const getTypeMessage = (msg: proto.IMessage) => {
 		if (msg.viewOnceMessage) {
 			return getTypeMessage(msg.viewOnceMessage.message!)
 		} else if (msg.viewOnceMessageV2) {
@@ -597,7 +655,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		}
 	}
 
-	const getMediaType = (message: string) => {
+	const getMediaType = (message: proto.IMessage) => {
 		if(message.imageMessage) {
 			return 'image'
 		} else if(message.videoMessage) {
@@ -629,7 +687,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		}
 	}
 
-	const getButtonType = (message: string) => {
+	const getButtonType = (message: proto.IMessage) => {
 		if(message.buttonsMessage) {
 			return 'buttons'
 		} else if(message.buttonsResponseMessage) {
@@ -643,7 +701,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		}
 	}
 
-	const getButtonArgs = (message: string): BinaryNode['attrs'] => {
+	const getButtonArgs = (message: proto.IMessage): BinaryNode['attrs'] => {
 		if(message.templateMessage) {
 			// TODO: Add attributes
 			return {}
@@ -703,10 +761,11 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		getButtonArgs,
 		readMessages,
 		refreshMediaConn,
-	    	waUploadToServer,
+	    waUploadToServer,
 		fetchPrivacySettings,
 		getUSyncDevices,
 		createParticipantNodes,
+		sendButtonText,
 		updateMediaMessage: async(message: proto.IWebMessageInfo) => {
 			const content = assertMediaContent(message.message)
 			const mediaKey = content.mediaKey!
