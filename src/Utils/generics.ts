@@ -192,46 +192,28 @@ export async function promiseTimeout<T>(ms: number | undefined, promise: (resolv
 
 // ngapain? nyolong kah? wkwkwk minimal punya skill sendiri, gak modal nyolong!!
 export const generateMessageIDV2 = (userId?: string): string => {
-    const data = Buffer.alloc(8 + 20 + 16 + 4);
-    data.writeBigUInt64BE(BigInt(Math.floor(Date.now() / 1000)));
+	const data = Buffer.alloc(8 + 20 + 16);
+	data.writeBigUInt64BE(BigInt(Math.floor(Date.now() / 1000)));
 
-    if (userId) {
-        const id = jidDecode(userId);
-        if (id?.user) {
-            data.write(id.user, 8);
-            data.write('@c.us', 8 + id.user.length);
-        }
-    }
+	if (userId) {
+		const id = jidDecode(userId);
+		if (id?.user) {
+			data.write(id.user, 8);
+			data.write('@c.us', 8 + id.user.length);
+		}
+	}
 
-    const randomBefore = randomBytes(6);
-    randomBefore.copy(data, 0);
+	const random = randomBytes(20);
+	random.copy(data, 28);
 
-    const randomAfter = randomBytes(6);
-    randomAfter.copy(data, 10);
-
-    const hash = createHash('sha256').update(data).digest();
-    
-    let result = hash.toString('hex').toUpperCase().substring(0, 18);
-
-    result = result.slice(0, 9) + 'VRD2' + result.slice(14);
-
-    return result.toUpperCase();
+	const hash = createHash('sha256').update(data).digest();
+	const vrd = hash.toString('hex').toUpperCase().substring(0, 18);
+	return vrd.slice(0, 7) + "VRD2" + vrd.slice(11)
 };
 
 export const generateMessageID = (): string => {
-    const data = Buffer.alloc(12 + 4);
-
-    const randomBefore = randomBytes(6);
-    randomBefore.copy(data, 0);
-
-    const randomAfter = randomBytes(6);
-    randomAfter.copy(data, 10);
-
-    let result = data.toString('hex').toUpperCase().substring(0, 18);
-
-    result = result.slice(0, 5) + 'VRD2' + result.slice(15);
-
-    return result.toUpperCase();
+	const vrd = randomBytes(9).toString('hex').toUpperCase();
+	return vrd.slice(0, 9) + "VRD2" + vrd.slice(13)
 };
 
 export function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEventEmitter, event: T) {
