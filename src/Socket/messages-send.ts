@@ -307,7 +307,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 	const relayMessage = async(
 		jid: string,
-		message: proto.IMessage,
+		message: string,
 		{ messageId: msgId, participant, additionalAttributes, useUserDevicesCache, useCachedGroupMetadata, statusJidList }: MessageRelayOptions
 	) => {
 		const meId = authState.creds.me!.id
