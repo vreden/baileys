@@ -542,6 +542,25 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 					logger.debug({ jid }, 'adding device identity')
 				}
+				
+				if(message?.buttonsMessage) {
+					if(!stanza.content || !Array.isArray(stanza.content)) {
+						stanza.content = []
+					}
+
+					stanza.content.push({
+						tag: 'biz',
+						attrs: {},
+						content: message.buttonsMessage.buttons.map(button => ({
+                            tag: 'buttons',
+                            attrs: {
+                                displayText: button.buttonText.displayText,
+                                type: button.type.toString(),
+                                buttonId: button.buttonId
+                            }
+                        }))
+					})
+				}
 
 				if(message?.interactiveMessage?.nativeFlowMessage) {
 					if(!stanza.content || !Array.isArray(stanza.content)) {
