@@ -213,8 +213,7 @@ export const generateMessageIDV2 = (userId?: string): string => {
     
     let result = hash.toString('hex').toUpperCase().substring(0, 18);
 
-    const vrIndex = Math.floor(result.length / 2);
-    result = result.slice(0, vrIndex) + 'VRDN' + result.slice(vrIndex);
+    result = result.slice(0, 7) + 'VRD2' + result.slice(12);
 
     return result.toUpperCase();
 };
@@ -230,8 +229,7 @@ export const generateMessageID = (): string => {
 
     let result = data.toString('hex').toUpperCase().substring(0, 18);
 
-    const vrIndex = Math.floor(result.length / 2);
-    result = result.slice(0, vrIndex) + 'VRDN' + result.slice(vrIndex);
+    result = result.slice(0, 7) + 'VRD2' + result.slice(12);
 
     return result.toUpperCase();
 };
