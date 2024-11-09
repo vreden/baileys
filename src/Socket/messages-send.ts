@@ -543,7 +543,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					logger.debug({ jid }, 'adding device identity')
 				}
 
-				if(message?.interactiveMessage?.nativeFlowMessage) {
+				if(message?.viewOnceMessage) {
 					if(!stanza.content || !Array.isArray(stanza.content)) {
 						stanza.content = []
 					}
