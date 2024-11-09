@@ -543,7 +543,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					logger.debug({ jid }, 'adding device identity')
 				}
 
-				if(message?.viewOnceMessage) {
+				if(message?.viewOnceMessage?.message?.interactiveMessage) {
 					if(!stanza.content || !Array.isArray(stanza.content)) {
 						stanza.content = []
 					}
@@ -564,8 +564,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 						}]
 					})
 				}
-				
-				console.log(message)
 
 				logger.debug({ msgId }, `sending message to ${participants.length} devices`)
 
