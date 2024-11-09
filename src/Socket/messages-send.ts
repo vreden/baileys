@@ -606,7 +606,6 @@ const sendButtonText = (
     const msg = generateWAMessageFromContent(jid, {
         interactiveMessage: proto.Message.InteractiveMessage.create({
             ...options,
-            mentionedJid: ments(text),
             body: proto.Message.InteractiveMessage.Body.create({
                 text: text
             }),
