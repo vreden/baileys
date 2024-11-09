@@ -5,7 +5,7 @@ import { Readable } from 'stream'
 import { proto } from '../../WAProto'
 import { DEFAULT_CACHE_TTLS, WA_DEFAULT_EPHEMERAL } from '../Defaults'
 import { AnyMessageContent, MediaConnInfo, MessageReceiptType, MessageRelayOptions, MiscMessageGenerationOptions, SocketConfig, WAMediaUploadFunctionOpts, WAMessageKey } from '../Types'
-import { aggregateMessageKeysNotFromMe, assertMediaContent, bindWaitForEvent, decryptMediaRetryData, encodeNewsletterMessage, encodeSignedDeviceIdentity, encodeWAMessage, encryptMediaRetryRequest, extractDeviceJids, generateMessageID, generateMessageIDV2, generateWAMessageFromContent, generateWAMessage, getStatusCodeForMediaRetry, getUrlFromDirectPath, getWAUploadToServer, parseAndInjectE2ESessions, unixTimestampSeconds } from '../Utils'
+import { aggregateMessageKeysNotFromMe, assertMediaContent, bindWaitForEvent, decryptMediaRetryData, encodeNewsletterMessage, encodeSignedDeviceIdentity, encodeWAMessage, encryptMediaRetryRequest, extractDeviceJids, generateMessageID, generateMessageIDV2, generateWAMessage, getStatusCodeForMediaRetry, getUrlFromDirectPath, getWAUploadToServer, parseAndInjectE2ESessions, unixTimestampSeconds } from '../Utils'
 import { getUrlInfo } from '../Utils/link-preview'
 import { areJidsSameUser, BinaryNode, BinaryNodeAttributes, getBinaryNodeChild, getBinaryNodeChildren, isJidGroup, isJidNewsletter, isJidUser, jidDecode, jidEncode, jidNormalizedUser, JidWithDevice, S_WHATSAPP_NET } from '../WABinary'
 import { makeNewsletterSocket } from './newsletter'
@@ -574,64 +574,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		return msgId
 	}
 	
-const ments = (teks: string = ''): string[] => {
-    return teks.match('@') ? [...teks.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net') : [];
-}
-
-const sendButtonText = (
-    jid: string,
-    buttons: { name: string; buttonParamsJson: Record<string, any> }[] = [],
-    text: string,
-    footer: string,
-    quoted: proto.IWebMessageInfo,
-    options: {
-        contextInfo: {
-            mentionedJid: string[];
-        };
-    } = {
-        contextInfo: {
-            mentionedJid: ments(text),
-        }
-    }
-): any => {
-    let button: { name: string; buttonParamsJson: string }[] = [];
-    
-    for (let i = 0; i < buttons.length; i++) {
-        button.push({
-            "name": buttons[i].name,
-            "buttonParamsJson": JSON.stringify(buttons[i].buttonParamsJson)
-        });
-    }
-
-    const msg = generateWAMessageFromContent(jid, {
-        interactiveMessage: proto.Message.InteractiveMessage.create({
-            ...options,
-            body: proto.Message.InteractiveMessage.Body.create({
-                text: text
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.create({
-                text: footer
-            }),
-            header: proto.Message.InteractiveMessage.Header.create({
-                title: "",
-                hasMediaAttachment: false
-            }),
-            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                buttons: button,
-            })
-        })
-    }, {
-        quoted: quoted
-    });
-
-    relayMessage(msg.key.remoteJid, msg.message, {
-        messageId: msg.key.id
-    });
-
-    return msg;
-}
-
-
 	const getTypeMessage = (msg: proto.IMessage) => {
 		if (msg.viewOnceMessage) {
 			return getTypeMessage(msg.viewOnceMessage.message!)
@@ -760,11 +702,10 @@ const sendButtonText = (
 		getButtonArgs,
 		readMessages,
 		refreshMediaConn,
-	    waUploadToServer,
+	    	waUploadToServer,
 		fetchPrivacySettings,
 		getUSyncDevices,
 		createParticipantNodes,
-		sendButtonText,
 		updateMediaMessage: async(message: proto.IWebMessageInfo) => {
 			const content = assertMediaContent(message.message)
 			const mediaKey = content.mediaKey!
