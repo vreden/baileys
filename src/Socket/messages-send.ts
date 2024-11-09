@@ -551,14 +551,13 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					stanza.content.push({
 						tag: 'biz',
 						attrs: {},
-						content: message.buttonsMessage.buttons.map(button => ({
-                            tag: 'buttons',
-                            attrs: {
-                                displayText: button.buttonText.displayText,
-                                type: button.type.toString(),
-                                buttonId: button.buttonId
-                            }
-                        }))
+						content: [{
+						    tag: 'buttons',
+						    attrs: {
+						        type: 'button',
+						        v: '1'
+						    }
+						}]
 					})
 				}
 
