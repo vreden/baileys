@@ -583,7 +583,7 @@ const sendButtonText = (
     buttons: { name: string; buttonParamsJson: Record<string, any> }[] = [],
     text: string,
     footer: string,
-    quoted: IWebMessageInfo = '',
+    quoted: proto.IWebMessageInfo,
     options: {
         contextInfo: {
             mentionedJid: string[];
