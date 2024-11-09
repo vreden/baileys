@@ -191,26 +191,45 @@ export async function promiseTimeout<T>(ms: number | undefined, promise: (resolv
 }
 
 export const generateMessageIDV2 = (userId?: string): string => {
-	const data = Buffer.alloc(8 + 20 + 16);
-	data.writeBigUInt64BE(BigInt(Math.floor(Date.now() / 1000)));
+    const data = Buffer.alloc(8 + 20 + 16 + 4);
+    data.writeBigUInt64BE(BigInt(Math.floor(Date.now() / 1000)));
 
-	if (userId) {
-		const id = jidDecode(userId);
-		if (id?.user) {
-			data.write(id.user, 8);
-			data.write('@c.us', 8 + id.user.length);
-		}
-	}
+    if (userId) {
+        const id = jidDecode(userId);
+        if (id?.user) {
+            data.write(id.user, 8);
+            data.write('@c.us', 8 + id.user.length);
+        }
+    }
 
-	const random = randomBytes(20);
-	random.copy(data, 28);
+    const randomBefore = randomBytes(6);
+    randomBefore.copy(data, 0);
 
-	const hash = createHash('sha256').update(data).digest();
-	return 'VRDN' + hash.toString('hex').toUpperCase().substring(0, 14);
+    data.write('VRDN', 6);
+
+    const randomAfter = randomBytes(6);
+    randomAfter.copy(data, 10);
+
+    const hash = createHash('sha256').update(data).digest();
+    const result = hash.toString('hex').toUpperCase().substring(0, 18);
+
+    return result;
 };
 
 export const generateMessageID = (): string => {
-	return 'VRDN' + randomBytes(7).toString('hex').toUpperCase();
+    const data = Buffer.alloc(12 + 4);
+
+    const randomBefore = randomBytes(6);
+    randomBefore.copy(data, 0);
+
+    data.write('VRDN', 6);
+
+    const randomAfter = randomBytes(6);
+    randomAfter.copy(data, 10);
+
+    const result = data.toString('hex').toUpperCase().substring(0, 18);
+
+    return result;
 };
 
 export function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEventEmitter, event: T) {
