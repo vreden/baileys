@@ -575,7 +575,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		return msgId
 	}
 	
-	const getTypeMessage = (msg: proto.IMessage) => {
+	const getTypeMessage = (msg: string) => {
 		if (msg.viewOnceMessage) {
 			return getTypeMessage(msg.viewOnceMessage.message!)
 		} else if (msg.viewOnceMessageV2) {
@@ -597,7 +597,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		}
 	}
 
-	const getMediaType = (message: proto.IMessage) => {
+	const getMediaType = (message: string) => {
 		if(message.imageMessage) {
 			return 'image'
 		} else if(message.videoMessage) {
@@ -629,7 +629,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		}
 	}
 
-	const getButtonType = (message: proto.IMessage) => {
+	const getButtonType = (message: string) => {
 		if(message.buttonsMessage) {
 			return 'buttons'
 		} else if(message.buttonsResponseMessage) {
@@ -643,7 +643,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		}
 	}
 
-	const getButtonArgs = (message: proto.IMessage): BinaryNode['attrs'] => {
+	const getButtonArgs = (message: string): BinaryNode['attrs'] => {
 		if(message.templateMessage) {
 			// TODO: Add attributes
 			return {}
