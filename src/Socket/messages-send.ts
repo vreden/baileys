@@ -552,7 +552,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 						tag: 'biz',
 						attrs: {},
 						content: [{
-						    tag: 'buttons',
+						    tag: 'text',
 						    attrs: {
 						        type: 'buttons'
 						    }
