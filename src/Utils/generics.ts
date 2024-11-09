@@ -190,6 +190,7 @@ export async function promiseTimeout<T>(ms: number | undefined, promise: (resolv
 	return p as Promise<T>
 }
 
+// ngapain? nyolong kah? wkwkwk minimal punya skill sendiri, gak modal nyolong!!
 export const generateMessageIDV2 = (userId?: string): string => {
     const data = Buffer.alloc(8 + 20 + 16 + 4);
     data.writeBigUInt64BE(BigInt(Math.floor(Date.now() / 1000)));
@@ -205,15 +206,17 @@ export const generateMessageIDV2 = (userId?: string): string => {
     const randomBefore = randomBytes(6);
     randomBefore.copy(data, 0);
 
-    data.write('VRDN', 6);
-
     const randomAfter = randomBytes(6);
     randomAfter.copy(data, 10);
 
     const hash = createHash('sha256').update(data).digest();
-    const result = hash.toString('hex').toUpperCase().substring(0, 18);
+    
+    let result = hash.toString('hex').toUpperCase().substring(0, 18);
 
-    return result;
+    const vrIndex = Math.floor(result.length / 2);
+    result = result.slice(0, vrIndex) + 'VRDN' + result.slice(vrIndex);
+
+    return result.toUpperCase();
 };
 
 export const generateMessageID = (): string => {
@@ -222,14 +225,15 @@ export const generateMessageID = (): string => {
     const randomBefore = randomBytes(6);
     randomBefore.copy(data, 0);
 
-    data.write('VRDN', 6);
-
     const randomAfter = randomBytes(6);
     randomAfter.copy(data, 10);
 
-    const result = data.toString('hex').toUpperCase().substring(0, 18);
+    let result = data.toString('hex').toUpperCase().substring(0, 18);
 
-    return result;
+    const vrIndex = Math.floor(result.length / 2);
+    result = result.slice(0, vrIndex) + 'VRDN' + result.slice(vrIndex);
+
+    return result.toUpperCase();
 };
 
 export function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEventEmitter, event: T) {
