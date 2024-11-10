@@ -1,7 +1,7 @@
 {
   "name": "@vreden/meta",
-  "version": "6.7.9",
-  "description": "Premium Baileys With Newsletter And Buttons Supported By Bochell FF",
+  "version": "1.0.0",
+  "description": "WhatsApp Web Official Meta Facebook Developer Blueprint For Desktop",
   "keywords": [
     "whatsapp",
     "js-whatsapp",
@@ -14,7 +14,7 @@
     "whatsapp-bot",
     "vreden"
   ],
-  "homepage": "https://github.com/vreden/baileys",
+  "homepage": "https://www.vreden.my.id",
   "repository": {
     "url": "git+ssh://git@github.com/vreden/baileys.git"
   },
