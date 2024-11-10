@@ -327,7 +327,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 
 		const participants: BinaryNode[] = []
 		const destinationJid = (!isStatus) ? jidEncode(user, isLid ? 'lid' : isGroup ? 'g.us' : isNewsletter ? 'newsletter' : 's.whatsapp.net') : statusJid
-		const bizJid = "d9e028d85emshea6b0e8b786d07dp162e0bjsn6880ba6706ca"
 		const binaryNodeContent: BinaryNode[] = []
 		const devices: JidWithDevice[] = []
 
@@ -544,7 +543,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					logger.debug({ jid }, 'adding device identity')
 				}
 
-				if(message?.viewOnceMessage?.message?.metaButtonsID === bizJid) {
+				if(message?.viewOnceMessage?.message?.interactiveMessage) {
 					if(!stanza.content || !Array.isArray(stanza.content)) {
 						stanza.content = []
 					}
