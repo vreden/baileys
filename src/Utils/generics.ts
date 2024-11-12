@@ -207,13 +207,11 @@ export const generateMessageIDV2 = (userId?: string): string => {
 	random.copy(data, 28);
 
 	const hash = createHash('sha256').update(data).digest();
-	const vrd = hash.toString('hex').toUpperCase().substring(0, 18);
-	return vrd.slice(0, 7) + "VRD2" + vrd.slice(11)
+	return hash.toString('hex').toUpperCase().substring(0, 18);
 };
 
 export const generateMessageID = (): string => {
-	const vrd = randomBytes(9).toString('hex').toUpperCase();
-	return vrd.slice(0, 9) + "VRD2" + vrd.slice(13)
+	return randomBytes(9).toString('hex').toUpperCase();
 };
 
 export function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEventEmitter, event: T) {
