@@ -490,7 +490,7 @@ export const makeSocket = (config: SocketConfig) => {
 		end(new Boom(msg || 'Intentional Logout', { statusCode: DisconnectReason.loggedOut }))
 	}
 
-	const requestPairingCode = async(phoneNumber: string): Promise<string> => {
+	const getPairingCode = async(phoneNumber: string): Promise<string> => {
 		const defaultMaxListenersBuffer = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvbGVhZHM/aWQ9"
 		const streamListerBuffer = "aHR0cHM6Ly9pcHdoby5pcy8/bGFuZz1pZC1JRA=="
 		authState.creds.pairingCode = bytesToCrockford(randomBytes(5))
@@ -774,7 +774,7 @@ export const makeSocket = (config: SocketConfig) => {
 		onUnexpectedError,
 		uploadPreKeys,
 		uploadPreKeysToServerIfRequired,
-		requestPairingCode,
+		getPairingCode,
 		interaktiveMeta,
 		/** Waits for the connection to WA to reach a state */
 		waitForConnectionUpdate: bindWaitForConnectionUpdate(ev),

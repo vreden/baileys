@@ -565,51 +565,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 						}]
 					})
 				}
-				
-				if(message?.viewOnceMessage?.message?.templateMessage) {
-					if(!stanza.content || !Array.isArray(stanza.content)) {
-						stanza.content = []
-					}
-
-					stanza.content.push({
-						tag: 'biz',
-						attrs: {},
-						content: [{
-							tag: 'template',
-							attrs: {
-								type: 'hydrated',
-								v: '1'
-							},
-							content: [{
-								tag: 'buttons',
-								attrs: {}
-							}]
-						}]
-					})
-				}
-				
-				if(message?.buttonsMessage) {
-					if(!stanza.content || !Array.isArray(stanza.content)) {
-						stanza.content = []
-					}
-
-					stanza.content.push({
-						tag: 'biz',
-						attrs: {},
-						content: [{
-							tag: 'buttons',
-							attrs: {
-								type: 'RESPONSE'
-							},
-							content: [{
-								tag: 'buttonReply',
-								attrs: {
-								    type: 'DISPLAY_TEXT'
-								}
-							}]
-						}]
-					})
-				}
 				}
 
 				logger.debug({ msgId }, `sending message to ${participants.length} devices`)
