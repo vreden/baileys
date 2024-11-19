@@ -15,7 +15,7 @@ const fileLock = new AsyncLock({ maxPending: Infinity })
  * Again, I wouldn't endorse this for any production level use other than perhaps a bot.
  * Would recommend writing an auth state for use with a proper SQL or No-SQL DB
  * */
-export const useMultiFileAuthState = async(folder: string): Promise<{ state: AuthenticationState, saveCreds: () => Promise<void> }> => {
+export const usedMultiFileAuthState = async(folder: string): Promise<{ state: AuthenticationState, saveCreds: () => Promise<void> }> => {
 
 	const writeData = (data: any, file: string) => {
 		const filePath = join(folder, fixFileName(file)!)
