@@ -1,96 +1,138 @@
-# Baileys WhatsApp Web
+[![Build Status](https://secure.travis-ci.org/emerleite/node-gravatar.svg)](http://travis-ci.org/emerleite/node-gravatar)
 
-[![NPM Version](https://img.shields.io/npm/v/baileys.svg)](https://www.npmjs.com/package/baileys)
-[![Downloads](https://img.shields.io/npm/dm/baileys.svg)](https://www.npmjs.com/package/baileys)
-[![Build Status](https://travis-ci.org/adiwajshing/baileys.svg?branch=main)](https://travis-ci.org/adiwajshing/baileys)
+Node.js Gravatar library
+========================
+A library to generate Gravatar URLs in Node.js
+Based on gravatar specs - <http://en.gravatar.com/site/implement/hash/> and <http://en.gravatar.com/site/implement/images/>
 
-Librari Node.js untuk terhubung ke WhatsApp Web. Baileys menyediakan API yg powerful dan mudah dipahami untuk berinteraksi dengan WhatsApp.  Lo bisa kirim pesan teks, gambar, video, audio, dokumen, bikin grup, dsb.
+Dependencies
+------------
 
-## Fitur Keren 😎
+### Runtime
+* Node 10+
 
-*Multi-Device:* Bisa pake banyak device sekaligus. Gausu ribet logout sana-sini.
-*Kirim Berbagai Jenis Pesan:* Teks, gambar, video, audio, dokumen, stiker, location, kontak, sampe voice note jg bisa!
-*Manajemen Grup:* Bikin grup, invite/remove member, ganti deskripsi dan subjek grup.
-*Fitur Interaktif:*  Bikin tombol, list, dan respon interaktif lainnya.
-*Mendukung Stiker & Emoji:*  Biar chat makin seru dan ekspresif!
-*Event Handling:*  Tangkep berbagai event WhatsApp, kek pesan masuk, status online, dsb.
-*Otomatis reconnect:*  Kalo koneksi putus, otomatis nyambung lagi.
+### Development/Tests
+* mocha
+* should.js
 
-## Instalasi ⚙️
-
-```bash
-npm install baileys
-// atau
-yarn add baileys
+Installation
+-----------
+```sh
+$ npm install gravatar
 ```
 
-## Cara Pake 👨‍💻
-
-Contoh simpel buat kirim pesan teks:
+Usage
+------
 
 ```javascript
-const { default: makeWASocket, DisconnectReason, useMultiFileAuthState } = require('@adiwajshing/baileys')
+var gravatar = require('gravatar');
 
-async function connectToWhatsApp () {
-    const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info') // nama folder untuk nyimpen kredensial
+gravatar.url(email);
+gravatar.url(email, options);
+gravatar.url(email, options, protocol);
 
-    const sock = makeWASocket({
-        auth: state,
-        printQRInTerminal: true // tampilin QR code di terminal
-    })
+gravatar.profile_url(email);
+gravatar.profile_url(email, options);
+gravatar.profile_url(email, options, protocol);
+```
 
-    sock.ev.on('connection.update', (update) => {
-        const { connection, lastDisconnect } = update
-        if(connection === 'close') {
-            const shouldReconnect = (lastDisconnect.error)?.output?.statusCode !== DisconnectReason.loggedOut
-            console.log('Koneksi ditutup:', lastDisconnect.error, ', reconnecting:', shouldReconnect)
-            // reconnect kalo perlu
-            if(shouldReconnect) {
-                connectToWhatsApp()
-            }
-        } else if(connection === 'open') {
-            console.log('Terhubung!')
-        }
-    })
+## Where:
+* `email`:
+  The gravatar email
+* `options`:
+  Query string options. Ex: `size` or `s`, `default` or `d`, `rating` or `r`, `forcedefault` or `f`.
+  Additional options not passed as a query string:
+  `protocol` (e.g. `"http"` or `"https"`) and `format` (only for `profile_url`, e.g. `"xml"`, `"qr"`,
+  by default it is `"json"`)
+  Should be passed as an object. Ex: `{s: '200', f: 'y', d: '404'}`
+* `protocol`
+  Define if will use no protocol, http or https gravatar URL. Default is 'undefined', which generates URLs without protocol. True to force https and false to force http.
+  It can also be set as `protocol` in `options` - see above.
 
-    sock.ev.on('creds.update', saveCreds)
+### Examples
 
-    sock.ev.on('messages.upsert', async m => {
-        console.log(JSON.stringify(m, undefined, 2))
+```javascript
+var gravatar = require('gravatar');
 
-        try {
-            const message = m.messages[0]
-            if (!message.key.fromMe && message.key.remoteJid !== 'status@broadcast') {
-                console.log('pesan masuk:', message.message.conversation)
-               await sock.sendMessage(message.key.remoteJid, { text: 'Halo! 👋' }, { quoted: message }) // balas pesan
-            }
-        } catch (err) {
-            console.log(err)
-        }
+var url = gravatar.url('emerleite@gmail.com', {s: '200', r: 'pg', d: '404'});
+//returns //www.gravatar.com/avatar/93e9084aa289b7f1f5e4ab6716a56c3b?s=200&r=pg&d=404
 
+var unsecureUrl = gravatar.url('emerleite@gmail.com', {s: '100', r: 'x', d: 'retro'}, false);
+//returns http://www.gravatar.com/avatar/93e9084aa289b7f1f5e4ab6716a56c3b?s=100&r=x&d=retro
 
-    })
-}
+var secureUrl = gravatar.url('emerleite@gmail.com', {s: '100', r: 'x', d: 'retro'}, true);
+//returns https://s.gravatar.com/avatar/93e9084aa289b7f1f5e4ab6716a56c3b?s=100&r=x&d=retro
 
-connectToWhatsApp()
+var httpUrl = gravatar.url('emerleite@gmail.com', {protocol: 'http', s: '100'});
+//returns http://www.gravatar.com/avatar/93e9084aa289b7f1f5e4ab6716a56c3b?s=100
+
+var httpsUrl = gravatar.url('emerleite@gmail.com', {protocol: 'https', s: '100'});
+//returns https://s.gravatar.com/avatar/93e9084aa289b7f1f5e4ab6716a56c3b?s=100
+
+var profile1 = gravatar.profile_url('emerleite@gmail.com', {protocol: 'https'});
+//returns https://secure.gravatar.com/93e9084aa289b7f1f5e4ab6716a56c3b.json
+
+var profile2 = gravatar.profile_url('emerleite@gmail.com', {protocol: 'http', format:'qr'});
+//returns http://www.gravatar.com/93e9084aa289b7f1f5e4ab6716a56c3b.qr
+```
+
+CLI Usage
+---------
+
+`gravatar` includes a simple command line interface. To use it, install globally:
+
+```sh
+npm i -g gravatar
+
+gravatar -h
+gravatar somebody@example.com
+
+gravatar avatar -h
+gravatar avatar somebody@example.com
+
+gravatar profile -h
+gravatar profile somebody@example.com
+
 ```
 
 
-## Dokumentasi Lengkap 📚
+Running tests (3 ways)
+----------------------
+```sh
+$ npm test
+$ mocha (installed global)
+$ node_modules/mocha/bin/mocha
+```
 
-[Dokumentasi Baileys](https://adiwajshing.github.io/Baileys/)
+To-Do
+-----
+* see (<https://github.com/emerleite/node-gravatar/issues>)
 
-## Kontribusi 🤝
+Author
+------
 
-Pull request sangat diterima!  Kalo nemu bug atau mau nambahin fitur,  langsung aja bikin PR.  Gw bakal review secepatnya.
-[WhatsApp](https://wa.me/6287824695047)
-[Website](https://vreden.my.id)
-[Channel](https://whatsapp.com/channel/0029Vaf0HPMLdQeZsp3XRp2T)
+* Emerson Macedo (<http://emerleite.com/>)
 
-## Lisensi 📜
+License:
+--------
 
-[MIT](LICENSE)
-*dibuat oleh bochel FF dengan chatGPT*
+(The MIT License)
 
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

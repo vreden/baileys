@@ -1,22 +1,14 @@
 {
-  "name": "@vreden/meta",
-  "version": "1.0.1",
-  "description": "WhatsApp Web Official Meta Facebook Developer Blueprint For Desktop",
+  "name": "@mrpudidi/gravatar",
+  "version": "1.0.0",
+  "description": "NodeJS libary gravatar",
   "keywords": [
-    "whatsapp",
-    "js-whatsapp",
-    "whatsapp-api",
-    "whatsapp-web",
-    "multi-device",
-    "newsletter",
-    "buttons",
-    "interaktive",
-    "whatsapp-bot",
-    "vreden"
+    "gravatar",
+    "avatar"
   ],
-  "homepage": "https://www.vreden.my.id",
+  "homepage": "https://github.com",
   "repository": {
-    "url": "git+ssh://git@github.com/vreden/baileys.git"
+    "url": "git+ssh://git@github.com/gravatar/avatar.git"
   },
   "license": "MIT",
   "author": "Adhiraj Singh",
