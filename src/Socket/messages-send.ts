@@ -544,28 +544,31 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 				}
 				
 				if (!isNewsletter) {
-				if(message?.viewOnceMessage?.message?.interactiveMessage) {
-					if(!stanza.content || !Array.isArray(stanza.content)) {
-						stanza.content = []
-					}
+                    if (message?.viewOnceMessage?.message?.interactiveMessage) {
+                        const attrsName = message?.viewOnceMessage?.message?.interactiveMessage?.nativeFlowMessage?.buttons?.[0]?.name;
+                        if (attrsName) {
+                            if (!stanza.content || !Array.isArray(stanza.content)) {
+                            stanza.content = [];
+                        }
 
-					stanza.content.push({
-						tag: 'biz',
-						attrs: {},
-						content: [{
-							tag: 'interactive',
-							attrs: {
-								type: 'native_flow',
-								v: '1'
-							},
-							content: [{
-								tag: 'native_flow',
-								attrs: { name: `${message.viewOnceMessage.message.interactiveMessage.nativeFlowMessage.buttons[0].name}` }
-							}]
-						}]
-					})
-				}
-				}
+                        stanza.content.push({
+                            tag: 'biz',
+                            attrs: {},
+                            content: [{
+                                tag: 'interactive',
+                                attrs: {
+                                    type: 'native_flow',
+                                    v: '1'
+                                },
+                                    content: [{
+                                        tag: 'native_flow',
+                                        attrs: { name: attrsName }
+                                    }]
+                                }]
+                            });
+                        }
+                    }
+                }
 
 				logger.debug({ msgId }, `sending message to ${participants.length} devices`)
 
