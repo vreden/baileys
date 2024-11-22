@@ -560,7 +560,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 							},
 							content: [{
 								tag: 'native_flow',
-								attrs: { name: message?.viewOnceMessage?.message?.interactiveMessage?.nativeFlowMessage?.buttons[0].name }
+								attrs: { name: `${message.viewOnceMessage.message.interactiveMessage.nativeFlowMessage.buttons[0].name}` }
 							}]
 						}]
 					})
