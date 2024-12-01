@@ -34,6 +34,22 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		groupMetadata,
 		groupToggleEphemeral,
 	} = sock
+	
+	const patchMessageRequiresBeforeSending = (msg: proto.IMessage, recipientJids: string[]): proto.IMessage => {
+		if (msg?.deviceSentMessage?.message?.listMessage) {
+			msg = JSON.parse(JSON.stringify(msg))
+
+			msg.deviceSentMessage!.message!.listMessage!.listType = proto.Message.ListMessage.ListType.SINGLE_SELECT
+		}
+
+		if (msg?.listMessage) {
+			msg = JSON.parse(JSON.stringify(msg))
+
+			msg.listMessage!.listType = proto.Message.ListMessage.ListType.SINGLE_SELECT
+		}
+
+		return msg;
+	}
 
 	const userDevicesCache = config.userDevicesCache || new NodeCache({
 		stdTTL: DEFAULT_CACHE_TTLS.USER_DEVICES, // 5 minutes
@@ -273,7 +289,8 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 		extraAttrs?: BinaryNode['attrs']
 	) => {
 		const patched = await patchMessageBeforeSending(message, jids)
-		const bytes = encodeWAMessage(patched)
+		const requiredPatched = patchMessageRequiresBeforeSending(patched, jids)
+		const bytes = encodeWAMessage(requiredPatched)
 
 		let shouldIncludeDeviceIdentity = false
 		const nodes = await Promise.all(
@@ -386,7 +403,8 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					}
 
 					const patched = await patchMessageBeforeSending(message, devices.map(d => jidEncode(d.user, isLid ? 'lid' : 's.whatsapp.net', d.device)))
-					const bytes = encodeWAMessage(patched)
+					const requiredPatched = await patchMessageRequiresBeforeSending(patched, devices.map(d => jidEncode(d.user, isLid ? 'lid' : 's.whatsapp.net', d.device)))
+					const bytes = encodeWAMessage(requiredPatched)
 
 					const { ciphertext, senderKeyDistributionMessage } = await signalRepository.encryptGroupMessage(
 						{
@@ -543,28 +561,46 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					logger.debug({ jid }, 'adding device identity')
 				}
 				
-				if (!isNewsletter) {
-				if(message?.viewOnceMessage?.message?.interactiveMessage) {
-					if(!stanza.content || !Array.isArray(stanza.content)) {
-						stanza.content = []
-					}
-
-					stanza.content.push({
+				const buttonType = getButtonType(message)
+				if(buttonType) {
+					(stanza.content as BinaryNode[]).push({
 						tag: 'biz',
 						attrs: {},
-						content: [{
-							tag: 'interactive',
-							attrs: {
-								type: 'native_flow',
-								v: '1'
-							},
-							content: [{
-								tag: 'native_flow',
-								attrs: { name: 'quick_reply' }
-							}]
-						}]
+						content: [
+							{
+								tag: buttonType,
+								attrs: getButtonArgs(message),
+							}
+						]
 					})
+					logger.debug({ jid }, 'adding business node')
 				}
+				
+				if (!isNewsletter) {
+				if (message?.viewOnceMessage?.message?.interactiveMessage?.nativeFlowMessage) {
+                if (!stanza.content || !Array.isArray(stanza.content)) {
+                    stanza.content = [];
+                }
+
+                const buttons = message?.viewOnceMessage?.message?.interactiveMessage?.nativeFlowMessage?.buttons || [];
+                const buttonName = buttons[0]?.name || 'quick_reply';
+
+                stanza.content.push({
+                    tag: 'biz',
+                    attrs: {},
+                    content: [{
+                        tag: 'interactive',
+                        attrs: {
+                            type: 'native_flow',
+                            v: '1'
+                        },
+                        content: [{
+                            tag: 'native_flow',
+                            attrs: { name: buttonName }
+                        }]
+                    }]
+                });
+                }
 				}
 
 				logger.debug({ msgId }, `sending message to ${participants.length} devices`)
