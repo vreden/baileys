@@ -574,6 +574,9 @@ export const generateWAMessageFromContent = (
 	message: WAMessageContent,
 	options: MessageGenerationOptionsFromContent
 ) => {
+    if (message.viewOnceMessage.message.interactiveMessage) {
+        message = message.viewOnceMessage.message
+    }
 	// set timestamp to now
 	// if not specified
 	if(!options.timestamp) {
