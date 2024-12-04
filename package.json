@@ -1,17 +1,17 @@
 {
-  "name": "@mrpudidi/gravatar",
-  "version": "1.0.2",
-  "description": "NodeJS libary gravatar",
+  "name": "@babibus/game",
+  "version": "1.0.0",
+  "description": "Nothing",
   "keywords": [
-    "gravatar",
-    "avatar",
-    "whatsapp",
-    "meta",
-    "vreden"
+    "game",
+    "gamer",
+    "vrrrrddddd",
+    "fornite",
+    "babibus"
   ],
-  "homepage": "https://www.vreden.my.id",
+  "homepage": "https://github.com",
   "repository": {
-    "url": "git+ssh://git@github.com/vreden/avatar.git"
+    "url": "git+ssh://git@github.com/babibus/gamer.git"
   },
   "license": "MIT",
   "author": "Adhiraj Singh",
@@ -68,7 +68,7 @@
     "conventional-changelog-cli": "^2.2.2",
     "eslint": "^8.0.0",
     "jest": "^27.0.6",
-    "jimp": "^0.22.12",
+    "jimp": "^1.6.0",
     "json": "^11.0.0",
     "link-preview-js": "^3.0.5",
     "open": "^8.4.2",
@@ -81,8 +81,8 @@
     "typescript": "^4.6.4"
   },
   "peerDependencies": {
-    "jimp": "^0.22.12",
-    "link-preview-js": "^3.0.0",
+    "jimp": "^1.6.0",
+    "link-preview-js": "^3.0.12",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.32.6"
   },
