@@ -575,33 +575,6 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 					})
 					logger.debug({ jid }, 'adding business node')
 				}
-				
-				if (!isNewsletter) {
-				if (message?.viewOnceMessage?.message?.interactiveMessage?.nativeFlowMessage) {
-                if (!stanza.content || !Array.isArray(stanza.content)) {
-                    stanza.content = [];
-                }
-
-                const buttons = message?.viewOnceMessage?.message?.interactiveMessage?.nativeFlowMessage?.buttons || [];
-                const buttonName = buttons[0]?.name || 'quick_reply';
-
-                stanza.content.push({
-                    tag: 'biz',
-                    attrs: {},
-                    content: [{
-                        tag: 'interactive',
-                        attrs: {
-                            type: 'native_flow',
-                            v: '1'
-                        },
-                        content: [{
-                            tag: 'native_flow',
-                            attrs: { name: buttonName }
-                        }]
-                    }]
-                });
-                }
-				}
 
 				logger.debug({ msgId }, `sending message to ${participants.length} devices`)
 
