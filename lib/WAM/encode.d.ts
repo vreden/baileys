@@ -1,2 +1,3 @@
-import { BinaryInfo } from './BinaryInfo';
-export declare const encodeWAM: (binaryInfo: BinaryInfo) => any;
+import { BinaryInfo } from './BinaryInfo'
+
+export declare const encodeWAM: (binaryInfo: BinaryInfo) => Buffer
