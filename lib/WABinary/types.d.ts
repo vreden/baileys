@@ -1,5 +1,4 @@
-import * as constants from './constants'
-
+import * as constants from './constants.js';
 /**
  * the binary node WA uses internally for communication
  *
@@ -8,15 +7,13 @@ import * as constants from './constants'
  * to maintain functional code structure
  * */
 export type BinaryNode = {
-    tag: string
+    tag: string;
     attrs: {
-        [key: string]: string
-    }
-    content?: BinaryNode[] | string | Uint8Array
-}
-
-export type BinaryNodeAttributes = BinaryNode['attrs']
-
-export type BinaryNodeData = BinaryNode['content']
-
-export type BinaryNodeCodingOptions = typeof constants
+        [key: string]: string;
+    };
+    content?: BinaryNode[] | string | Uint8Array;
+};
+export type BinaryNodeAttributes = BinaryNode['attrs'];
+export type BinaryNodeData = BinaryNode['content'];
+export type BinaryNodeCodingOptions = typeof constants;
+//# sourceMappingURL=types.d.ts.map

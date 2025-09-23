@@ -1,6 +1,7 @@
 {
   "name": "@vreden/meta",
-  "version": "9.1.9",
+  "type": "module",
+  "version": "9.2.0",
   "description": "Baileys is a lightweight JavaScript library for interacting with the WhatsApp Web API using WebSocket.",
   "keywords": [
     "facebook",
@@ -9,71 +10,91 @@
     "interactive",
     "meta",
     "whatsapp",
-    "whatsapp-bot"
+    "whatsapp-bot",
+    "vreden"
   ],
-  "homepage": "https://developers.facebook.com/docs/whatsapp/",
+  "homepage": "https://github.com/WhiskeySockets/Baileys/",
   "repository": {
-    "url": "https://web.whatsapp.com/"
+    "url": "git@github.com:WhiskeySockets/Baileys.git"
   },
   "license": "MIT",
-  "author": "Meta Platforms, Inc.",
+  "author": "Rajeh Taher",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib/*",
-    "WAProto/*",
-    "WASignalGroup/*.js"
+    "lib/**/*",
+    "WAProto/**/*",
+    "engine-requirements.js"
   ],
   "scripts": {
-    "test": "jest"
+    "build:all": "npm run build && npm run build:docs",
+    "build:docs": "typedoc",
+    "build": "tsc -P tsconfig.build.json && tsc-esm-fix --tsconfig=tsconfig.build.json --ext=.js",
+    "changelog:last": "conventional-changelog -p angular -r 2",
+    "changelog:preview": "conventional-changelog -p angular -u",
+    "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "example": "tsx ./Example/example.ts",
+    "gen:protobuf": "sh WAProto/GenerateStatics.sh",
+    "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
+    "lint": "tsc && eslint src --ext .js,.ts",
+    "lint:fix": "npm run format && npm run lint -- --fix",
+    "prepack": "npm run build",
+    "prepare": "npm run build",
+    "preinstall": "node ./engine-requirements.js",
+    "release": "release-it",
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest --testMatch '**/*.test.ts'",
+    "test:e2e": "node --experimental-vm-modules ./node_modules/.bin/jest --testMatch '**/*.test-e2e.ts'"
   },
   "dependencies": {
-    "@hapi/boom": "^9.1.3",
     "@adiwajshing/keyed-db": "^0.2.4",
-    "@cacheable/node-cache": "1.5.3", 
-    "@adiwajshing/eslint-config": "github:adiwajshing/eslint-config",
-    "libsignal": "npm:@meta.inc/libsignal@*",
+    "@cacheable/node-cache": "^1.4.0",
+    "@hapi/boom": "^9.1.3",
     "async-mutex": "^0.5.0",
-    "futoin-hkdf": "^1.5.1",
     "axios": "^1.6.0",
-    "cache-manager": "^5.7.6", 
-    "protobufjs": "^6.11.3",
-    "lodash": "^4.17.21",
-    "music-metadata": "^7.12.3",
+    "libsignal": "npm:@meta.inc/libsignal@*",
+    "lru-cache": "^11.1.0",
+    "music-metadata": "^11.7.0",
     "pino": "^9.6",
     "protobufjs": "^7.2.4",
-    "async-lock": "^1.4.1",
-    "audio-decode": "^2.1.3",
-    "node-cache": "^5.1.2",
-    "uuid": "^10.0.0",
-    "protobufjs": "^6.11.3",
-    "mysql2": "latest", 
     "ws": "^8.13.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.5.1",
-    "@types/node": "^16.0.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.31.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.9.0",
     "@types/ws": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "@whiskeysockets/eslint-config": "^1.0.0",
     "conventional-changelog-cli": "^2.2.2",
-    "eslint": "^8.0.0",
-    "jest": "^27.0.6",
-    "jimp": "^0.22.12",
+    "esbuild-register": "^3.6.0",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.4.0",
+    "jest": "^30.0.5",
+    "jimp": "^1.6.0",
+    "jiti": "^2.4.2",
     "json": "^11.0.0",
-    "link-preview-js": "^3.0.5",
+    "link-preview-js": "^3.0.0",
+    "lru-cache": "^11.1.0",
     "open": "^8.4.2",
+    "pino-pretty": "^13.1.1",
+    "prettier": "^3.5.3",
+    "protobufjs-cli": "^1.1.3",
     "release-it": "^15.10.3",
-    "sharp": "^0.32.6",
-    "ts-jest": "^27.0.3",
-    "ts-node": "^10.8.1",
+    "ts-jest": "^29.4.0",
+    "tsc-esm-fix": "^3.1.2",
+    "tsx": "^4.20.3",
     "typedoc": "^0.27.9",
     "typedoc-plugin-markdown": "4.4.2",
     "typescript": "^5.8.2"
   },
   "peerDependencies": {
     "audio-decode": "^2.1.3",
-    "jimp": "^0.22.12",
+    "jimp": "^1.6.0",
     "link-preview-js": "^3.0.0",
-    "sharp": "^0.32.6"
+    "sharp": "*"
   },
   "peerDependenciesMeta": {
     "audio-decode": {
@@ -84,13 +105,10 @@
     },
     "link-preview-js": {
       "optional": true
-    },
-    "sharp": {
-      "optional": true
     }
   },
-  "packageManager": "yarn@1.22.19",
-  "directories": {
-    "lib": "lib"
+  "packageManager": "yarn@4.9.2",
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

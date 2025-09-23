@@ -1,4 +1,3 @@
-yarn pbjs -t static-module -w commonjs -o ./WAProto/index.js ./WAProto/WAProto.proto;
-yarn pbts -o ./WAProto/index.d.ts ./WAProto/index.js;
-
-#protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=env=node,useOptionals=true,forceLong=long --ts_proto_out=. ./src/Binary/WAMessage.proto;
+yarn pbjs -t static-module --no-convert --no-beautify -w es6 --no-bundle --no-delimited --no-verify --no-comments -o ./index.js ./WAProto.proto;
+yarn pbjs -t static-module --no-convert --no-beautify -w es6 --no-bundle --no-delimited --no-verify ./WAProto.proto | yarn pbts --no-comments -o ./index.d.ts -;
+node ./fix-imports.js
