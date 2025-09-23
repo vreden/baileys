@@ -2013,13 +2013,13 @@ const sock = makeWASocket({ logger: { level: 'debug' } });
 sock.ws.on('CB:presence', (json) => console.log('Sockets update:', json));
 
 // for any message with tag 'edge_routing'
-sock.ws.on('CB:edge_routing', (node) => console.log('Sockets update:', node));
+sock.ws.on('CB:edge_routing', (node) => { })
 
 // for any message with tag 'edge_routing' and id attribute = abcd
-sock.ws.on('CB:edge_routing,id:abcd', (node) => console.log('Sockets update:', node));
+sock.ws.on('CB:edge_routing,id:abcd', (node) => { })
 
 // for any message with tag 'edge_routing', id attribute = abcd & first content node routing_info
-sock.ws.on('CB:edge_routing,id:abcd,routing_info', (node) => console.log('Sockets update:', node));
+sock.ws.on('CB:edge_routing,id:abcd,routing_info', (node) => { })
 ```
 </details>
 
