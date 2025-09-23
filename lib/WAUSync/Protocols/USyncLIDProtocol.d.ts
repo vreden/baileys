@@ -7,4 +7,4 @@ export declare class USyncLIDProtocol implements USyncQueryProtocol {
     getUserElement(user: USyncUser): BinaryNode | null;
     parser(node: BinaryNode): string | null;
 }
-//# sourceMappingURL=UsyncLIDProtocol.d.ts.map
+//# sourceMappingURL=USyncLIDProtocol.d.ts.map
