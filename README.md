@@ -48,6 +48,7 @@
 - 🚀 Logger buffer clear
 - 🍟 Convert LID mentions to JID
 - 🤖 Convert sender LID to JID
+- 👥 Convert Group ID LID to JID
 - 🩸 Fixed all bug LID (participant - mentionedJid - sender - admins group)
 
 <br>
