@@ -58,13 +58,21 @@
 
 Proyek ini bersifat **publik**, sehingga siapa pun dapat menggunakan atau melakukan *rename* untuk keperluan pribadi. Namun, penggunaan untuk tujuan **komersial** atau sekadar pencarian nama **tidak diperkenankan**.  
 
-Proyek ini dikembangkan berdasarkan pustaka **Whiskeysocket**, dengan perbaikan dan peningkatan yang dilakukan oleh administrator.  
+Proyek ini dikembangkan berdasarkan libary **Whiskeysocket**, dengan perbaikan dan peningkatan yang dilakukan oleh administrator.  
 Tujuan utama dari proyek ini adalah untuk **memudahkan pengguna serta memperbaiki kesalahan bot yang sebelumnya sering dialami**.  
 
 Saat ini proyek masih dalam tahap **Beta**, sehingga kemungkinan masih terdapat bug atau kendala tak terduga saat proses instalasi maupun eksekusi.  
 Jika Anda mengalami masalah yang berlanjut, silakan hubungi kami melalui kontak yang telah tersedia.  
 
 Terimakasih, salam hangat, vreden!
+<br>
+
+## ⚡ Contact Admin
+- [WhatsApp](https://wa.me/6285643115199)
+- [Channel](https://whatsapp.com/channel/0029Vaf0HPMLdQeZsp3XRp2T)
+- [Rest API](https://api.vreden.my.id)
+- [Website Shop](https://www.rumahotp.com)
+
 <br>
 
 ## 📜 License
