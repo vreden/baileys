@@ -1,10 +1,10 @@
-import type { USyncQueryProtocol } from '../../Types/USync.js';
-import type { BinaryNode } from '../../WABinary/index.js';
-import type { USyncUser } from '../USyncUser.js';
+import { USyncQueryProtocol } from '../../Types/USync'
+import { BinaryNode } from '../../WABinary'
+import { USyncUser } from '../USyncUser'
+
 export declare class USyncLIDProtocol implements USyncQueryProtocol {
-    name: string;
-    getQueryElement(): BinaryNode;
-    getUserElement(user: USyncUser): BinaryNode | null;
-    parser(node: BinaryNode): string | null;
+    name: string
+    getQueryElement(): BinaryNode
+    getUserElement(user: USyncUser): BinaryNode | null
+    parser(node: BinaryNode): string | null
 }
-//# sourceMappingURL=USyncLIDProtocol.d.ts.map
