@@ -43,7 +43,7 @@
 
 <br>
 
-## 🔥 Updated New (23 September 2025)
+## 🔥 Updated New (25 September 2025)
 - ✨ AI Logo Message
 - 🚀 Logger Buffer Clear
 - 🗄️ makeInMemoryStore Fixed
@@ -51,6 +51,9 @@
 - 🤖 Convert Sender LID to JID
 - 👥 Convert Group ID LID to JID
 - 🩸 Fixed All Bug LID (participant - mentionedJid - sender - admins group)
+- 💨 Fixed Slow Response
+- ⚠️ Buttons ContextInfo Are Fixed By WhatsApp
+- 📣 Newsletter Supported
 
 <br>
 
@@ -663,12 +666,12 @@ await sock.sendMessage(jid, {
 <summary><strong>#️⃣ Status Mentions Message</strong></summary>
 
 ```javascript
-await sock.sendStatusMentions(jid, {
+await sock.sendStatusMentions({
   image: {
     url: 'https://example.com/image.jpg'
   }, 
   caption: 'Nice day!'
-})
+}, ["123@s.whatsapp.net", "123@s.whatsapp.net"])
 ```
 </details>
 
@@ -1639,6 +1642,148 @@ await sock.sendMessage(jid, {
 
 <br>
 
+### 📣 Newsletter
+<details>
+<summary><strong>📋 Newsletter Metadata</strong></summary>
+
+```javascript
+// code can't have "https://whatsapp.com/channel/", only code
+const newsletter = await sock.newsletterMetadata("invite", "0029Vaf0HPMLdQeZsp3XRp2T")
+console.log("Newsletter metadata:", newsletter)
+```
+
+```javascript
+// from jid newsletter
+const newsletter = await sock.newsletterMetadata("jid", "120363282083849178@newsletter")
+console.log("Newsletter metadata:", newsletter)
+```
+</details>
+
+<details>
+<summary><strong>👥 Newsletter Follow</strong></summary>
+
+```javascript
+await sock.newsletterFollow("120363282083849178@newsletter")
+```
+</details>
+
+<details>
+<summary><strong>👥 Newsletter Unfollow</strong></summary>
+
+```javascript
+await sock.newsletterUnfollow("120363282083849178@newsletter")
+```
+</details>
+
+<details>
+<summary><strong>🔈 Newsletter Mute</strong></summary>
+
+```javascript
+await sock.newsletterMute("120363282083849178@newsletter")
+```
+</details>
+
+<details>
+<summary><strong>🔊 Newsletter Unmute</strong></summary>
+
+```javascript
+await sock.newsletterUnmute("120363282083849178@newsletter")
+```
+</details>
+
+<details>
+<summary><strong>❤️ Newsletter Reaction Mode</strong></summary>
+
+```javascript
+// Allow all emoji
+await vreden.newsletterReactionMode("120363282083849178@newsletter", "ALL")
+```
+
+```javascript
+// Allow special emoji (👍, ❤️, 😯, 😢, 🙏)
+await vreden.newsletterReactionMode("120363282083849178@newsletter", "BASIC")
+```
+
+```javascript
+// No reaction allowed
+await vreden.newsletterReactionMode("120363282083849178@newsletter", "NONE")
+```
+</details>
+
+<details>
+<summary><strong>📋 Update Description</strong></summary>
+
+```javascript
+await sock.newsletterUpdateDescription("120363282083849178@newsletter", "News description here!")
+```
+</details>
+
+<details>
+<summary><strong>👤 Update Name Newsletter</strong></summary>
+
+```javascript
+await sock.newsletterUpdateName("120363282083849178@newsletter", "New newsletter name!")
+```
+</details>
+
+<details>
+<summary><strong>🖼️ Change Profile Newsletter</strong></summary>
+
+```javascript
+// Change
+await sock.newsletterUpdatePicture("120363282083849178@newsletter", { url: 'https://example.com/image.jpg' })
+```
+
+```javascript
+// Remove
+await sock.newsletterRemovePicture("120363282083849178@newsletter")
+```
+</details>
+
+<details>
+<summary><strong>📣 Newsletter Create</strong></summary>
+
+```javascript
+const newsletter = await sock.newsletterCreate("Here is name newsletter!", "Here is description!", { url: 'https://example.com/image.jpg' })
+console.log("Here is data new created newsletter:", newsletter)
+```
+</details>
+
+<details>
+<summary><strong>🔥 List Newsletter Join</strong></summary>
+
+```javascript
+const list_newsletter = await sock.newsletterFetchAllParticipating()
+console.log("Your list newsletter join:", list_newsletter)
+```
+</details>
+
+<details>
+<summary><strong>😎 Newsletter Change Owner</strong></summary>
+
+```javascript
+await sock.newsletterChangeOwner("120363282083849178@newsletter", "123@lid")
+```
+</details>
+
+<details>
+<summary><strong>😂 Newsletter Demote</strong></summary>
+
+```javascript
+await sock.newsletterDemote("120363282083849178@newsletter", "123@lid")
+```
+</details>
+
+<details>
+<summary><strong>🌟 Newsletter Reaction Message</strong></summary>
+
+```javascript
+await sock.newsletterReactMessage("120363282083849178@newsletter", "12", "🦖")
+```
+</details>
+
+<br>
+
 ### 🛠️ Groups
 <details>
 <summary><strong>🔄 Create Group</strong></summary>
@@ -1837,6 +1982,20 @@ await sock.groupMemberAddMode(jid, 'admin_add')
 <br>
 
 ### 🔒 Privacy
+<details>
+<summary><strong>🖼️ Change Profile User or Group</strong></summary>
+
+```javascript
+// Change
+await sock.updateProfilePicture(jid, { url: 'https://example.com/image.jpg' })
+```
+
+```javascript
+// Remove
+await sock.removeProfilePicture(jid)
+```
+</details>
+
 <details>
 <summary><strong>🚫 Block/Unblock User</strong></summary>
 
