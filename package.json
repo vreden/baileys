@@ -1,6 +1,6 @@
 {
   "name": "@vreden/meta",
-  "version": "9.2.0",
+  "version": "9.2.1",
   "description": "Baileys is a lightweight JavaScript library for interacting with the WhatsApp Web API using WebSocket.",
   "keywords": [
     "facebook",
