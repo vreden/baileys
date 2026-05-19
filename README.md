@@ -43,7 +43,7 @@
 
 <br>
 
-## 🔥 Updated New (29 September 2025)
+## 🔥 Updated New (19 Mei 2026)
 - ✨ AI Logo Message
 - 🚀 Logger Buffer Clear
 - 🗄️ makeInMemoryStore Fixed
@@ -54,6 +54,7 @@
 - 💨 Fixed Slow Response (29 Sep 2025)
 - ⚠️ Buttons ContextInfo Are Fixed By WhatsApp
 - 📣 Newsletter Supported
+- 👋🏻 Fixed Lids Mapping (Last Update)
 
 <br>
 
